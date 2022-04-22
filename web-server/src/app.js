@@ -1,4 +1,6 @@
-const express = require('express')
+const express = require('express');
+const { geocode_api } = require('../utils/geocode');
+const { weather_api } = require('../utils/weather');
 
 var app = express()
 
@@ -25,10 +27,17 @@ app.get("/test_json", (req, res) => {
     });
 })
 app.get("/test_geocode", (req, res) => {
-    res.send("test_geocode");
+    geocode_api(req.params.city, (err, data) => {
+        res.send(data);
+    })
 })
-app.get("/test_weather", (req, res) => {
-    res.send("test_geocode");
+
+app.get("/test_weather/:city?", (req, res) => {
+    geocode_api(req.params.city, (err, data) => {
+        weather_api(data.latitude, data.longitude, () => {
+            res.send(data)
+        })
+    })
 })
 
 
