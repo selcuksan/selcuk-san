@@ -26,16 +26,25 @@ app.get("/test_json", (req, res) => {
 
     });
 })
-app.get("/test_geocode", (req, res) => {
+app.get("/test_geocode/:city?", (req, res) => {
     geocode_api(req.params.city, (err, data) => {
-        res.send(data);
+        const longitude = data.features[0].center[0]
+        const latitude = data.features[0].center[1]
+        res.send({ longitude: longitude, latitude: latitude });
     })
 })
 
 app.get("/test_weather/:city?", (req, res) => {
     geocode_api(req.params.city, (err, data) => {
-        weather_api(data.latitude, data.longitude, () => {
-            res.send(data)
+        const longitude = data.features[0].center[0]
+        const latitude = data.features[0].center[1]
+        weather_api(latitude, longitude, (err, data) => {
+            weather = {
+                sicaklik: data.current["temperature"],
+                basinc: data.current["pressure"],
+                nem: data.current["humidity"]
+            }
+            res.send(weather);
         })
     })
 })
