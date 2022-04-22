@@ -1,14 +1,17 @@
 const express = require('express');
+const path = require('path/posix');
 const { geocode_api } = require('../utils/geocode');
 const { weather_api } = require('../utils/weather');
 
 var app = express()
-
 const port = process.env.PORT || 3000
+const public_folder = path.join(__dirname, '../public')
+app.use(express.static(public_folder))
 
 app.get("/", (req, res) => {
-    res.send("Homepage");
+    res.render('index.html')
 })
+
 
 app.get("/test_text", (req, res) => {
     res.send("18360859049");
@@ -40,7 +43,7 @@ app.get("/test_weather/:city?", (req, res) => {
         const latitude = data.features[0].center[1]
         weather_api(latitude, longitude, (err, data) => {
             weather = {
-                sicaklik: data.current["temperature"],
+                sicaklik: data.current["temperature"] + " C derece",
                 basinc: data.current["pressure"],
                 nem: data.current["humidity"]
             }
