@@ -6,6 +6,7 @@ const weather_api = function(latitude, longitude, callback) {
         if (err) {
             return callback(err, undefined)
         } else {
+
             return callback(undefined, res.body)
         }
     })
